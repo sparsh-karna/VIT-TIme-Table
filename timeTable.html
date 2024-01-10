@@ -55,7 +55,7 @@
         }
         th, td {
             padding: 8px;
-            text-align: left;
+            text-align: center;
             border-bottom: 1px solid #ddd;
         }
         th {
@@ -184,7 +184,7 @@
             if (timetable !== "" && day !== "") {
                 let lines = timetable.split('\n');
                 lines = lines.map(item => splitStringAtElements(item, [' ', '\t']));
-                lines = lines.slice(5);
+                lines = lines.slice(4);
                 let y = lines[0][0];
                 lines.forEach(line => {
                     if (line[0] !== 'LAB') {
