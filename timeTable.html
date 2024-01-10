@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Schedule</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label, select, textarea, button {
+            display: block;
+            margin-bottom: 10px;
+        }
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            resize: vertical;
+        }
+        select, button {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 100%;
+        }
+        button {
+            background-color: #4caf50;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Class Schedule</h1>
+        <label for="timetable">Enter Time Table</label>
+        <textarea id="timetable" placeholder="Enter Time Table"></textarea>
+        
+        <label for="day">Select Day</label>
+        <select id="day">
+            <option value="MON">Monday</option>
+            <option value="TUE">Tuesday</option>
+            <option value="WED">Wednesday</option>
+            <option value="THU">Thursday</option>
+            <option value="FRI">Friday</option>
+            <option value="SAT">Saturday</option>
+            <option value="SUN">Sunday</option>
+        </select>
+        
+        <button id="addBtn">Add Time Table</button>
+        
+        <h2>Theory</h2>
+        <table id="theoryTable" class="hidden" border="1">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Subject</th>
+                    <th>Venue</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data for Theory will appear here -->
+            </tbody>
+        </table>
+        
+        <h2>Lab</h2>
+        <table id="labTable" class="hidden" border="1">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Subject</th>
+                    <th>Venue</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data for Lab will appear here -->
+            </tbody>
+        </table>
+    </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get current day
+            const currentDate = new Date();
+            const currentDay = currentDate.toLocaleString('en-US', { weekday: 'short' }).toUpperCase();
+
+            // Set default dropdown option to current day
+            const dayDropdown = document.getElementById("day");
+            dayDropdown.value = currentDay;
+        });
+        document.getElementById("addBtn").addEventListener("click", function() {
+            const timetable = document.getElementById("timetable").value;
+            const day = document.getElementById("day").value.toUpperCase();
+
+            // Function to split string at multiple elements
+            function splitStringAtElements(inputString, splitElements) {
+                let n = inputString.length;
+                let rows = [];
+                let tempStr = '';
+                for(let i = 0; i < n; i++){
+                    if(splitElements.includes(inputString[i])){
+                        if(tempStr != '') {
+                            rows.push(tempStr);
+                        }
+                        tempStr = '';
+                    }
+                    else {
+                        tempStr += inputString[i];
+                    }
+                }
+                return rows;
+            }
+
+            // Function to create table
+            function removeDuplicates(arr) {
+                let unique = [];
+                arr.forEach(element => {
+                    if(!(element in unique)){
+                        unique.push(element);
+                    }
+                })
+                return unique;
+            }
+            function createTable(tableId, data) {
+                const table = document.getElementById(tableId);
+                const tbody = table.getElementsByTagName('tbody')[0];
+                tbody.innerHTML = "";
+
+                data.forEach(rowData => {
+                    const row = tbody.insertRow();
+                    rowData.forEach(cellData => {
+                        const cell = row.insertCell();
+                        cell.appendChild(document.createTextNode(cellData));
+                    });
+                });
+            }
+
+            const theoryData = [];
+            const labData = [];
+            const days = {
+                MON : { THEORY: [], LAB: [] },
+                TUE : { THEORY: [], LAB: [] },
+                WED : { THEORY: [], LAB: [] },
+                THU : { THEORY: [], LAB: [] },
+                FRI : { THEORY: [], LAB: [] },
+                SAT : { THEORY: [], LAB: [] },
+                SUN : { THEORY: [], LAB: [] }
+            };
+
+            if (timetable !== "" && day !== "") {
+                let lines = timetable.split('\n');
+                lines = lines.map(item => splitStringAtElements(item, [' ', '\t']));
+                lines = lines.slice(5);
+                let y = lines[0][0];
+                lines.forEach(line => {
+                    if (line[0] !== 'LAB') {
+                        days[line[0]].THEORY.push(...line.slice(1)); // Pushing all theory elements into the array
+                    } else {
+                        days[y].LAB.push(...line.slice(1)); // Pushing all lab elements into the array
+                    }
+                    y = line[0];
+                });
+            }
+
+            const tslots = {0:'8:00', 1:'8:55', 2:'9:50', 3:'10:45', 4:'11:40', 5:'12:35', 6:'2:00', 7:'2:55', 8:'3:50', 9:'4:45', 10:'5:40', 11:'6:35'};
+            const lslots = {0:'8:00', 1:'8:50', 2:'9:50', 3:'10:45', 4:'11:40', 5:'12:30', 6:'2:00', 7:'2:50', 8:'3:50', 9:'4:40', 10:'5:40', 11:'6:30'};
+            
+            days[day].THEORY.slice(1).forEach((slots, index) => {
+                    const sl = slots.split('-');
+                    if (sl.length > 2 && sl != "THEORY") {
+                        const time = tslots[index];
+                        const sub = sl[1]; // Subject is at index 0 in theory
+                        const venue = `${sl[3]}-${sl[4]}`;
+                        theoryData.push([time, sub, venue]);
+                    }
+                });
+            days[day].LAB.forEach((slots, index) => {
+                const sl = slots.split('-');
+                if (sl.length > 2) {
+                    const time = lslots[index];
+                    const sub = sl[0]; // Subject is at index 0 in lab
+                    const venue = `${sl[3]}-${sl[4]}`;
+                    labData.push([time, sub, venue]);
+                }
+            });
+
+            createTable("theoryTable", theoryData);
+            createTable("labTable", labData);
+
+            // Show tables after adding data
+            document.getElementById("theoryTable").classList.remove("hidden");
+            document.getElementById("labTable").classList.remove("hidden");
+        });
+    </script>
+</body>
+</html>
