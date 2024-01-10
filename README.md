@@ -13,6 +13,7 @@ This webpage allows users to input a class schedule and view it organized by day
 
 1. Open `index.html` in a web browser.
 2. Enter the class schedule details in the provided text area.
+   
    2.1. Copy the text as shown.
    <img width="1412" alt="Screenshot 2024-01-10 at 5 36 16 PM" src="https://github.com/sparsh-karna/VIT-TIme-Table/assets/78959094/80c96d52-fd0c-4d35-8ab3-efb37b54b699">
    2.2. Paste it in the text area.
