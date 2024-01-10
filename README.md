@@ -22,7 +22,7 @@ This webpage allows users to input a class schedule and view it organized by day
 ### Installation
 1. **Clone the repository:**  
    ```bash
-   [git clone https://github.com/](https://github.com/sparsh-karna/VIT-TIme-Table/tree/9c64e6ff8156aa82597c516623801fd02dff167c)
+   git clone https://github.com/sparsh-karna/VIT-TIme-Table/
 
 ## Preview
 <img width="824" alt="image" src="https://github.com/sparsh-karna/VIT-TIme-Table/assets/78959094/20e199cd-0aa6-4712-bed6-2f5da570bf17">
